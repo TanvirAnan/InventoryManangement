@@ -4,6 +4,27 @@
 }
 
 
+@{ 
+    string sessionUser = "";
+
+    if (Session["username"] != null && Session["username"].ToString() != "")
+    {
+        sessionUser = Session["username"].ToString();
+    }
+
+
+}
+
+<script>
+    var username ='@sessionUser';
+    
+    if (username != null && username != "") {
+        alert("You are already logged in as " + username);
+        window.location.href= '@Url.Action("Index", "Home")';
+    }
+</script>
+
+
 <div class="d-flex justify-content-center align-items-center vh-100">
     <div class="card shadow-lg p-5 rounded-4" style="width: 400px; background-color: #f4f6f9;">
         <h3 class="text-center text-dark mb-4 fw-bold">Sign in to Your Account</h3>
@@ -72,9 +93,4 @@
     }
 </style>
 
-<script>
-    var username = '@ViewBag.username';
-    if (username != null && username != "") {
-        window.location.href= '@Url.Action("Index", "Home")';
-    }
-</script>
+

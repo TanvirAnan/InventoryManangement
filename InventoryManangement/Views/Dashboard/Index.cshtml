@@ -1,0 +1,360 @@
+﻿@using InventoryManangement.Models
+@using System.Data
+@*@model BaseEquipment*@
+
+
+@using System.Web.Helpers
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="mb-4 text-center">
+        <h2 class="fw-bold">Dashboard</h2>
+        <p class="text-muted">Overview of users and tasks</p>
+    </div>
+
+
+    @{
+        string sessionUser = "";
+
+        if (Session["username"] == null || Session["username"].ToString() == "")
+        {
+            Response.Redirect(Url.Action("Login", "Auth"));
+        }
+
+
+    }
+    @{
+        //from the frontend
+        //BaseEquipment baseEquipment = new BaseEquipment();
+        //List<BaseEquipment> equiments = baseEquipment.EquipementList();
+
+        //collecting data from backend
+        List<BaseEquipment> lstEquipment = (List<BaseEquipment>)ViewBag.lstEquipment;
+        List<Customer> customers = (List<Customer>)ViewBag.Customers;
+    }
+
+
+
+    <script>
+        //Legacy Part
+        //function ShowModal() {
+        //    document.getElementById('dvOverlay').style.display = '';
+        //    document.getElementById('dvModal').style.display = '';
+
+        //}
+        //function HideModal() {
+        //    document.getElementById('dvOverlay').style.display = 'none';
+        //    document.getElementById('dvModal').style.display = 'none';
+        //}
+
+
+        //dynamic part
+        function parseDotNetDate(dateStr) {
+            if (!dateStr) return "";
+            const match = /\/Date\((\d+)\)\//.exec(dateStr);
+            if (match) {
+                const timestamp = parseInt(match[1], 10);
+                const dateObj = new Date(timestamp);
+
+                // Return local date parts to preserve .NET date accurately
+                return dateObj.getFullYear() + '-' +
+                    String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(dateObj.getDate()).padStart(2, '0');
+            }
+            return "";
+        }
+
+
+
+
+
+
+
+        function UpdateEquipement(equipmentid, obj) {
+            ShowModal();
+            $('#hdEquipmentID').val(equipmentid);
+            $('#btnSubmit').val('Update');
+            $('#exampleFormControlInput1').val(obj.EquipmentName);
+            $('#exampleFormControlInput2').val(obj.Quantity);
+            console.log(obj);
+            let entryDate = parseDotNetDate(obj.EntryDate);
+            let receiveDate = parseDotNetDate(obj.ReceiveDate);
+
+            if (entryDate) {
+                $('#exampleFormControlInput3').val(entryDate);
+            }
+            if (receiveDate) {
+                $('#exampleFormControlInput4').val(receiveDate);
+            }
+
+
+
+        }
+
+
+
+    function ShowModal() {
+
+        $('#dvModal').dialog({
+            title:"Equipment Entry",
+            height: 600,
+            width: 400,
+            modal: true,
+            draggable: false
+            //,
+            //buttons: {
+            //    Cancel: function () {
+            //        dialog.dialog("close");
+            //    },
+            //    Ok: function () {
+            //        dialog.dialog("close");
+            //    }
+            //}
+        });
+
+    }
+    @*function HideModal() {
+    }
+
+    var OutMessage = "@ViewBag.OutMessage";
+    if (OutMessage != "") {
+        alert(OutMessage);
+        OutMessage = "";
+    }*@
+
+
+
+
+      function confirmDelete(id) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "This assignment will be deleted!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("form-" + id).submit();
+                }
+            });
+        }
+
+    </script>
+
+
+
+
+    <!-- Table 1: Users -->
+    <div class="mb-5">
+        <div class="table-responsive">
+            <div class="mb-5">
+                <h5 class="mb-3">Users</h5>
+                <input type="button" value="new" style="float:right" onclick="ShowModal();$('#btnSubmit').val('Save'); " />
+
+                <div class="card shadow-sm rounded-4 border-0">
+                    <div class="card-body p-0">
+
+                        <table class="table table-dark table-hover mb-0 align-middle">
+                            <thead class="table-primary text-center">
+                                <tr>
+                                    <th style="width: 10%;"></th>
+                                    <th style="width: 10%;">Update</th>
+                                    <th style="width: 10%;">Delete</th>
+                                    <th style="width: 20%;">Name</th>
+                                    <th style="width: 10%;">Quantity</th>
+                                    <th style="width: 20%;">Stock</th>
+                                    <th style="width: 20%;">Entry Date</th>
+                                    <th style="width: 20%;">Receive Date</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                @{
+
+
+                                    @*foreach (BaseEquipment obj in equiments)
+                                        {
+                                            <tr class="table-active">
+                                                <td>@obj.EquipmentId</td>
+                                                <td>@obj.EquipmentName</td>
+                                                <td>@obj.Quantity</td>
+                                                <td>@obj.Stock</td>
+                                                <td>@(obj.EntryDate.HasValue ? obj.EntryDate.Value.ToString("yyyy-MM-dd") : "-")</td>
+                                                <td>@(obj.ReceiveDate.HasValue ? obj.ReceiveDate.Value.ToString("yyyy-MM-dd") : "-")</td>
+                                            </tr>
+                                        }*@
+
+
+                                    foreach (BaseEquipment obj in lstEquipment)
+                                    {
+                                        <form action="@Url.Action("Index","Dashboard")" method="post">
+
+                                        <tr>
+                                            <td><input type="hidden" name="EquipeId" value="@obj.EquipmentId"> </td>
+                                            <td>
+                                                <input type="button" value="Update" name="btnSubmit"
+                                                       onclick='UpdateEquipement(@obj.EquipmentId, @Html.Raw(Json.Encode(obj)))' />
+                                            </td>
+                                            <td><input type="submit" value="Delete" name="btnSubmit" /></td>
+                                            <td>@obj.EquipmentName</td>
+                                            <td>@obj.Quantity</td>
+                                            <td>@obj.Stock</td>
+                                            <td>@obj.EntryDate</td>
+                                            <td>@obj.ReceiveDate</td>
+                                        </tr>
+                                        </form>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Table 2: Tasks -->
+    <div>
+        <h5 class="mb-3">Tasks</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Task ID</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>101</td>
+                        <td>Update profile page</td>
+                        <td><span class="badge bg-warning text-dark">Pending</span></td>
+                    </tr>
+                    <tr>
+                        <td>102</td>
+                        <td>Fix login bug</td>
+                        <td><span class="badge bg-success">Completed</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="mb-5">
+    <div class="table-responsive">
+        <div class="mb-5">
+            <h5 class="mb-3">Customer Assignment Equipements</h5>
+            <input type="button" value="new" style="float:right" onclick="window.location.href='@Url.Action("NewEquipmentAssignment","Dashboard")'" />
+
+
+            <div class="card shadow-sm rounded-4 border-0">
+
+                @{
+                    BaseEquipment baseEquipment = new BaseEquipment();
+                    System.Data.DataTable dt = baseEquipment.ListAssignedEquipment();
+
+
+                    //for(int x=0;x< dt.Rows.Count-1;x++)
+                    //{
+                    //    for (int y = 0; y < 6; y++)
+                    //    {
+                    //        string ddds = dt.Rows[x][y].ToString();
+                    //    }
+                    //}
+
+
+                    var dataList = (from p in dt.AsEnumerable()
+                                    select new
+                                    {
+                                        AssignId = p.Field<Int32>("AssignmentId"),
+                                        CustomerID = p.Field<Int32>("CustomerId"),
+                                        EquipementID = p.Field<Int32>("EquipmentId"),
+                                        //CustomerName = p.Field<string>("CustomerName"),
+                                        //CustomerMobile = p.Field<string>("CustomerMobile"),
+                                        //CustAddress = p.Field<string>("CustAddress"),
+                                        EquiCount = p.Field<Int32>("AssignedEquipCount"),
+                                        //EquipmentName = p.Field<string>("EquipmentName"),
+                                        MakeBy = p.Field<string>("MakeBy"),
+                                        IsReceived = p.Field<bool>("IsReceived")
+                                    }).ToList();
+
+                }
+                <div class="card-body p-0">
+
+                    <table class="table table-dark table-hover mb-0 align-middle">
+                        <thead class="table-primary text-center">
+                            <tr>
+                                <th>Update</th>
+                                <th>Delete</th>
+                                <th>CustomerName</th>
+                                <th>CustomerAddress</th>
+                                <th>CustomerMobile</th>
+                                <th>EquipmentName</th>
+                                <th>EquiCount</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+
+                            @{
+                                foreach (var objData in dataList)
+                                {
+                                    Customer objCustomer = customers.FirstOrDefault(c => c.CustomerId == objData.CustomerID);
+                                    BaseEquipment objEquipment = lstEquipment.FirstOrDefault(e => e.EquipmentId == objData.EquipementID);
+
+
+
+                                    <tr>
+                                        <td>
+                                            <input type="button" value="Update" />
+                                        </td>
+                                        <td>
+                                            <form id="form-@objData.AssignId" action="@Url.Action("Index", "Dashboard")" method="post">
+                                                <input type="hidden" name="AssignId" value="@objData.AssignId" />
+                                                <input type="submit" value="Delete" name="btnDeleteAssign" onclick="confirmDelete(@objData.AssignId)" class="btn btn-danger" />
+
+                                            </form>
+
+
+
+                                        </td>
+
+                                        <td>@objCustomer.CustomerName</td>
+                                        <td>@objCustomer.Adress</td>
+                                        <td>@objCustomer.PhoneNo</td>
+                                        <td>@objEquipment.EquipmentName</td>
+                                        <td>@objData.EquiCount</td>
+
+                                    </tr>
+                                }
+
+                            }
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+
+
+
+        </div>
+
+    </div>
+</div>
+
+
+
+
+@Html.Partial("_PartialEquipementEntry");

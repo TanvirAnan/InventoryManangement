@@ -22,6 +22,15 @@
                     <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
+                    @{
+                        if (Session["username"] != null)
+                        {
+                            <li class="nav-item">
+                                @Html.ActionLink("Dasboard", "index", "Dashboard", new { area = "" }, new { @class = "nav-link" })
+                            </li>
+
+                        }
+                    }
                     <li class="nav-item">
                         @Html.ActionLink("Login", "Login", "Auth", new { area = "" }, new { @class = "nav-link" })
                     </li>
@@ -43,7 +52,10 @@
     </div>
 
     @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Scripts/JqUi/jquery-ui.js"></script>
+    <link href="~/Scripts/JqUi/jquery-ui.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @*@Scripts.Render("~/bundles/bootstrap")*@
     @RenderSection("scripts", required: false)
 </body>
 </html>

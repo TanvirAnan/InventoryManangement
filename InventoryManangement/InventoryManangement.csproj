@@ -121,11 +121,14 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AuthController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\BaseDashboard.cs" />
     <Compile Include="Models\BaseMember.cs" />
+    <Compile Include="Models\Customer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +167,20 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\JqUi\Images\ui-icons_444444_256x240.png" />
+    <Content Include="Scripts\JqUi\Images\ui-icons_555555_256x240.png" />
+    <Content Include="Scripts\JqUi\Images\ui-icons_777620_256x240.png" />
+    <Content Include="Scripts\JqUi\Images\ui-icons_777777_256x240.png" />
+    <Content Include="Scripts\JqUi\Images\ui-icons_cc0000_256x240.png" />
+    <Content Include="Scripts\JqUi\Images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Scripts\JqUi\jquery-ui.css" />
+    <Content Include="Scripts\JqUi\jquery-ui.js" />
+    <Content Include="Scripts\JqUi\jquery-ui.min.css" />
+    <Content Include="Scripts\JqUi\jquery-ui.min.js" />
+    <Content Include="Scripts\JqUi\jquery-ui.structure.css" />
+    <Content Include="Scripts\JqUi\jquery-ui.structure.min.css" />
+    <Content Include="Scripts\JqUi\jquery-ui.theme.css" />
+    <Content Include="Scripts\JqUi\jquery-ui.theme.min.css" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -180,9 +197,14 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Auth\Login.cshtml" />
+    <Content Include="Views\Dashboard\Index.cshtml" />
+    <Content Include="Views\Dashboard\_PartialEquipementEntry.cshtml" />
+    <Content Include="Views\Dashboard\NewEquipmentAssignment.cshtml" />
+    <Content Include="Views\Dashboard\ModelTest.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Customer\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

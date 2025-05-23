@@ -1,0 +1,97 @@
+﻿@using InventoryManangement.Models
+
+
+@{
+    ViewBag.Title = "NewEquipmentAssignment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+     var OutMessage = "@ViewBag.OutMessage";
+ if (OutMessage != "") {
+     alert(OutMessage);
+     OutMessage = "";
+ }
+</script>
+<h2>NewEquipmentAssignment</h2>
+@{
+
+    List<BaseEquipment> lstEquipment = (List<BaseEquipment>)ViewBag.lstEquipment;
+    string dfd = Newtonsoft.Json.JsonConvert.SerializeObject(lstEquipment);//(lstEquipment);
+
+    List<Customer> ct = (List<Customer>)ViewBag.customers;
+    //string cobj = Newtonsoft.Json.JsonConvert.SerializeObject(ct);
+
+    //EquipmentId	EquipmentName	Quantity	Stock	EntryDate	ReceiveDate
+}
+<script>
+    //$('#hdAvailableStock').val('')
+    //$('#txtCustomerID').val('')
+
+    var listArr = JSON.parse('@Html.Raw(dfd)');// JSON.stringify(@dfd);// JSON.parse('@dfd');
+    console.log(listArr)
+    function ShowEquipmentStock(cntrol) {
+        var equipmentID = $(cntrol).val();
+        $.each(listArr, function (index,obj) {
+            if (obj.EquipmentId == parseInt(equipmentID)) {
+                $('#spnStockStatus').html("Available Stock:" + obj.Stock)
+                $('#hdAvailableStock').val(obj.Stock)
+            }
+        })
+    }
+
+    function validateInput(control) {
+        if (parseInt($(control).val()) > parseInt($('#hdAvailableStock').val())) {
+            alert("value must be<=" + $('#hdAvailableStock').val())
+            $(control).val('')
+        }
+        else if (parseInt($(control).val()) < 0) {
+            alert("Must be positive")
+            $(control).val('')
+        }
+        else {
+
+        }
+    }
+    $(document).ready(function () {
+        $('#exampleFormControlInput1').val(1)
+        $('#exampleFormControlInput2').val('2017');
+        $('#exampleFormControlInput3').val(10)
+    })
+</script>
+<form action="@Url.Action("NewEquipmentAssignment", "Dashboard")" method="post">
+    <input type="hidden" name="EquipmentID" id="hdEquipmentID" value="0" />
+    <div class="row">
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">CustomerID</label>
+            <select name="txtCustomerID" class="form-control" id="exampleFormControlInput1">
+                @{
+                    foreach (Customer obj in ct)
+                    {
+                        <option value="@obj.CustomerId">@obj.CustomerName</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="exampleFormControlInput2" class="form-label">EquipmentID</label>
+            @*<input type="text" name="txtEquipmentID" class="form-control" id="exampleFormControlInput2" placeholder="Equipment">*@
+
+            <select name="txtEquipmentID" class="form-control" id="exampleFormControlInput2" onchange="ShowEquipmentStock(this)">
+                @{
+                    foreach (BaseEquipment obj in lstEquipment)
+                    {
+                        <option value="@obj.EquipmentId">@obj.EquipmentName</option>
+                    }
+                }
+            </select>
+            <span id="spnStockStatus"></span>
+            <input type="hidden" id="hdAvailableStock" />
+
+        </div>
+        <div class="mb-3">
+            <label for="exampleFormControlInput2" class="form-label">Quantity</label>
+            <input type="text" name="txtQuantity" class="form-control" id="exampleFormControlInput3" placeholder="Quantity" onblur="validateInput(this)">
+        </div>
+        <input type="submit" class="btn btn-primary" value="Save" name="btnSubmit" id="btnSubmit" />
+    </div>
+</form>
